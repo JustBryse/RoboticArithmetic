@@ -13,6 +13,9 @@ def get_vector_matrix_product(vector,matrix):
 def get_matrix_product(m1,m2):
     return np.matmul(m1,m2)
 
+def get_matrix_inverse(m1):
+    return la.inv(m1)
+
 # elementary rotation, and displacement matrices -------------------------------------------------------------------------------------
 
 # theta (in degrees) is the angle for "roll" and pivots around the z-axis
@@ -54,6 +57,19 @@ def get_t_matrix(x,y,z):
     t_matrix = np.array([r1,r2,r3,r4])
     return t_matrix
 
+# returns the augmented displacement transform matrix
+# a,b,c represet the positions of the 1s for x,y,z respectively, respecting sign
+def get_t_matrix(a,b,c,x,y,z):
+    r1 = [0,0,0,x]
+    r1[abs(a)-1] = a/abs(a)
+    r2 = [0,0,0,y]
+    r2[abs(b)-1] = b/abs(b)
+    r3 = [0,0,0,z]
+    r3[abs(c)-1] = c/abs(c)
+    r4 = [0,0,0,1]
+    t_matrix = np.array([r1,r2,r3,r4])
+    return t_matrix
+
 # gets a TRPY transformation matrix
 def get_trpy_matrix(x,y,z,theta,phi,psi):
     theta_matrix = get_theta_matrix(theta)
@@ -64,19 +80,6 @@ def get_trpy_matrix(x,y,z,theta,phi,psi):
     m2 = np.matmul(m1,psi_matrix)
     m3 = m2 + np.array([[0,0,0,x],[0,0,0,y],[0,0,0,z],[0,0,0,0]])
     return m3
-
-# Gets a forward transform elementary matrix. Inverting the returned matrix gives the matrix inverse.
-def get_forward_elementary_matrix(x,y,z,theta,phi,psi):
-
-    tm = get_t_matrix(x,y,z)
-    thetam = get_theta_matrix(theta)
-    phim = get_phi_matrix(phi)
-    psim = get_psi_matrix(psi)
-
-    m0 = np.matmul(tm,thetam)
-    m1 = np.matmul(m0,phim)
-    m2 = np.matmul(m1,psim)
-    return m2
 
 # elementary inverse displacement and rotation matrices -----------------------------------------------------------------------------------
 
@@ -137,16 +140,27 @@ def get_inv_trpy_matrix(x,y,z,theta,phi,psi):
     m3 = m2 + np.array([[0,0,0,alpha],[0,0,0,beta],[0,0,0,gamma],[0,0,0,0]])
     return m3
 
+# gets trpy transformation matrix in degrees
+def get_trpy_matrixd(x,y,z,theta,phi,psi):
+    theta = radians(theta)
+    phi = radians(phi)
+    psi = radians(psi)
+    return get_trpy_matrix(x,y,z,theta,phi,psi)
 
-thetam = get_theta_matrix(30)
-phim = get_phi_matrix(10)
-psim = get_psi_matrix(260)
-tm = get_t_matrix(50,-100,30)
-m0 = np.matmul(phim,tm)
-m1 = np.matmul(m0,psim)
-m2 = np.matmul(m1,thetam)
-q_zxty_f = m2
-print("q_axty_f")
-print(q_zxty_f)
-print("inv_q_axty_f")
-print(la.inv(q_zxty_f))
+
+# example data from exercise 2.2
+"""
+q21 = get_trpy_matrix(-80,50,30,10,-20,-30)
+print("Q21")
+print(q21)
+q31_inv = get_inv_trpy_matrix(70,60,-20,25,-15,40)
+print("Q31^-1")
+print(q31_inv)
+Pr2 = np.array([2,-5,3,1])
+q23 = get_matrix_product(q31_inv,q21)
+print("Q23")
+print(q23)
+Pr3 = get_vector_matrix_product(Pr2,q23)
+print("Pr3")
+print(Pr3)
+"""
