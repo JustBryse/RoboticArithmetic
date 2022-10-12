@@ -19,7 +19,15 @@ def get_matrix_product(m1, m2):
 def get_matrix_inverse(m1):
     return la.inv(m1)
 
-
+#2d matrix calculation for translation and rotation
+def get_2d_matrix(theta, x, y):
+    theta = radians(theta)
+    r1 = [cos(theta), -sin(theta), x]
+    r2 = [sin(theta),cos(theta), y]
+    r3 = [0,0,1]
+    q2d_matrix = np.array([r1,r2,r3])
+    return q2d_matrix
+    
 # elementary rotation, and displacement matrices -------------------------------------------------------------------------------------
 
 # theta (in degrees) is the angle for "roll" and pivots around the z-axis
