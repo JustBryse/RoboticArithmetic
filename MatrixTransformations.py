@@ -178,14 +178,6 @@ def get_inv_trpy_matrix(x, y, z, theta, phi, psi):
     return m3
 
 
-# gets trpy transformation matrix in degrees
-def get_trpy_matrixd(x, y, z, theta, phi, psi):
-    th = radians(theta)
-    ph = radians(phi)
-    ps = radians(psi)
-    return get_trpy_matrix(x, y, z, th, ph, ps)
-
-
 # example data from exercise 2.2
 """
 q21 = get_trpy_matrix(-80,50,30,10,-20,-30)
