@@ -98,6 +98,19 @@ def get_trpy_matrix(x, y, z, theta, phi, psi):
     m3 = m2 + np.array([[0, 0, 0, x], [0, 0, 0, y], [0, 0, 0, z], [0, 0, 0, 0]])
     return m3
 
+# Gets a forward transform elementary matrix. Inverting the returned matrix gives the matrix inverse.
+def get_forward_elementary_matrix(x,y,z,theta,phi,psi):
+
+    tm = get_t_matrix(x,y,z)
+    thetam = get_theta_matrix(theta)
+    phim = get_phi_matrix(phi)
+    psim = get_psi_matrix(psi)
+
+    m0 = np.matmul(tm,thetam)
+    m1 = np.matmul(m0,phim)
+    m2 = np.matmul(m1,psim)
+    return m2
+
 
 # elementary inverse displacement and rotation matrices -----------------------------------------------------------------------------------
 
