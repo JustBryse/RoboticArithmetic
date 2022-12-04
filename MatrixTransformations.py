@@ -32,7 +32,7 @@ def get_2d_matrix(theta, x, y):
 
 # theta (in degrees) is the angle for "roll" and pivots around the z-axis
 def get_theta_matrix(theta):
-    theta = radians(theta)
+    #theta = radians(theta)
     r1 = [cos(theta), -sin(theta), 0, 0]
     r2 = [sin(theta), cos(theta), 0, 0]
     r3 = [0, 0, 1, 0]
@@ -43,7 +43,7 @@ def get_theta_matrix(theta):
 
 # phi (in degrees) is the angle for pitch and pivots around the y-axis
 def get_phi_matrix(phi):
-    phi = radians(phi)
+    #phi = radians(phi)
     r1 = [cos(phi), 0, sin(phi), 0]
     r2 = [0, 1, 0, 0]
     r3 = [-sin(phi), 0, cos(phi), 0]
@@ -54,7 +54,7 @@ def get_phi_matrix(phi):
 
 # psi (in degrees) is the angle for yaw and pivots around the x-axis
 def get_psi_matrix(psi):
-    psi = radians(psi)
+    #psi = radians(psi)
     r1 = [1, 0, 0, 0]
     r2 = [0, cos(psi), -sin(psi), 0]
     r3 = [0, sin(psi), cos(psi), 0]
@@ -96,6 +96,16 @@ def get_trpy_matrix(x, y, z, theta, phi, psi):
     m1 = np.matmul(theta_matrix, phi_matrix)
     m2 = np.matmul(m1, psi_matrix)
     m3 = m2 + np.array([[0, 0, 0, x], [0, 0, 0, y], [0, 0, 0, z], [0, 0, 0, 0]])
+    return m3
+
+def get_Tait_Bryan_matrix(x, y, z, alpha, beta, gamma):
+    alpha_matrix = get_psi_matrix(alpha)
+    beta_matrix = get_phi_matrix(beta)
+    gamma_matrix = get_theta_matrix(gamma)
+    t_matrix = get_t_matrix(x, y, z)
+    m1 = np.matmul(t_matrix, alpha_matrix)
+    m2 = np.matmul(m1, beta_matrix)
+    m3 = np.matmul(m2, gamma_matrix)
     return m3
 
 # Gets a forward transform elementary matrix. Inverting the returned matrix gives the matrix inverse.
